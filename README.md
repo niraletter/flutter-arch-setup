@@ -37,7 +37,7 @@ Flutter 3.47.9
 Android API 36
 Android Build Tools 36.0.0
 SDK location: ~/Android/Sdk
-Flutter location: ~/.local/share/flutter/3.47.9
+Flutter location: ~/development/flutter
 ```
 
 Android SDK licenses are accepted automatically. `pacman` and `sudo` may still prompt for confirmation.
@@ -73,3 +73,12 @@ flutter devices
 ```
 
 The device should appear with the state `device`. No emulator is required.
+
+## References
+
+- [Flutter installation for Linux](https://docs.flutter.dev/install/linux)
+- [Flutter SDK archive](https://docs.flutter.dev/install/archive)
+- [Flutter Android deployment](https://docs.flutter.dev/deployment/android)
+- [Android command-line tools](https://developer.android.com/tools)
+- [Arch Linux `android-tools` package](https://archlinux.org/packages/extra/x86_64/android-tools/)
+- [Arch Linux `android-udev` package](https://archlinux.org/packages/extra/any/android-udev/)

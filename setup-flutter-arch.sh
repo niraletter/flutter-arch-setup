@@ -2,14 +2,14 @@
 set -Eeuo pipefail
 
 # Lightweight Flutter Android setup for Arch Linux.
-# Installs a version-pinned Flutter SDK and Android command-line tooling.
+# Installs a version-pinned Flutter stable SDK and Android command-line tooling.
 # It does not install Android Studio, an emulator, system images, FVM, or mise.
 
 FLUTTER_VERSION="${FLUTTER_VERSION:-3.47.9}"
 ANDROID_API="${ANDROID_API:-36}"
 BUILD_TOOLS_VERSION="${BUILD_TOOLS_VERSION:-36.0.0}"
 ANDROID_SDK="${ANDROID_SDK:-$HOME/Android/Sdk}"
-FLUTTER_ROOT="${FLUTTER_ROOT:-$HOME/.local/share/flutter/$FLUTTER_VERSION}"
+FLUTTER_ROOT="${FLUTTER_ROOT:-$HOME/development/flutter}"
 FLUTTER_BIN="${FLUTTER_BIN:-$HOME/.local/bin}"
 CMDLINE_TOOLS_URL="${CMDLINE_TOOLS_URL:-https://dl.google.com/android/repository/commandlinetools-linux-14742923_latest.zip}"
 DRY_RUN=0
@@ -55,7 +55,7 @@ while (($#)); do
     --flutter-version)
       (($# >= 2)) || die "--flutter-version needs a value"
       FLUTTER_VERSION="$2"
-      FLUTTER_ROOT="$HOME/.local/share/flutter/$FLUTTER_VERSION"
+      FLUTTER_ROOT="$HOME/development/flutter"
       shift 2
       ;;
     --android-api)
@@ -103,7 +103,7 @@ run sudo pacman -Syu --needed \
   zip
 
 log "Preparing directories"
-run mkdir -p "$FLUTTER_BIN" "$HOME/.local/share/flutter" "$ANDROID_SDK/cmdline-tools"
+run mkdir -p "$FLUTTER_BIN" "$HOME/development" "$ANDROID_SDK/cmdline-tools"
 
 if [[ ! -x "$FLUTTER_ROOT/bin/flutter" ]]; then
   log "Downloading Flutter $FLUTTER_VERSION"
