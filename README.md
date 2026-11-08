@@ -1,84 +1,77 @@
-# Flutter Android Setup for Arch Linux
+# Flutter setup for Arch
 
-An automated, lightweight setup for Flutter Android development on Arch Linux.
+Automated Flutter and Android SDK setup for Arch-based Linux, without Android Studio. Designed for testing on a physical device over USB.
 
-The installer provides:
+## Features
 
-- A version-pinned Flutter stable SDK
-- The Dart SDK bundled with Flutter
-- Android command-line tools and platform-tools
-- One Android SDK platform and matching build tools
-- Java 17, Android udev rules, and required Arch packages
-
-Android Studio, emulators, system images, FVM, and mise are intentionally excluded. The intended workflow uses a physical Android device with USB debugging enabled.
+- Installs Flutter (stable), the Android command-line tools, and required SDK packages
+- Idempotent: safe to re-run, skips anything already installed
+- `--dry-run` previews every action without changing the system
+- Configures bash, zsh and fish, for whichever are present
+- Applies Gradle memory limits suited to low-RAM machines
 
 ## Requirements
 
-- Arch Linux
-- A user account with `sudo` access
-- Internet access
-- An Android device and USB data cable
+- Arch-based distribution with `pacman`
+- Non-root user with `sudo`
+- Internet connection
 
-Run the installer as a normal user. Do not run it with `sudo`; it invokes `sudo` only when installing system packages.
-
-## Install
+## Usage
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/niraletter/flutter-arch-setup/main/setup-flutter-arch.sh \
-  -o setup-flutter-arch.sh
-chmod +x setup-flutter-arch.sh
-./setup-flutter-arch.sh
+git clone https://github.com/<your-username>/<repo>.git
+cd <repo>
+chmod +x flutter-setup.sh
+
+./flutter-setup.sh --dry-run   # preview
+./flutter-setup.sh             # apply
 ```
 
-The default setup installs:
+Reload your shell afterwards (the script prints the exact command) or open a new terminal.
 
-```text
-Flutter 3.47.9
-Android API 36
-Android Build Tools 36.0.0
-SDK location: ~/Android/Sdk
-Flutter location: ~/development/flutter
-```
+| Option | Description |
+|---|---|
+| `-n`, `--dry-run` | Show planned actions; change nothing |
+| `-y`, `--yes` | Skip pacman confirmation |
+| `--udev` | Also install `android-udev` (if `adb` reports "no permissions") |
+| `-h`, `--help` | Show usage |
 
-Android SDK licenses are accepted automatically. `pacman` and `sudo` may still prompt for confirmation.
+Install locations can be overridden with `FLUTTER_DIR` and `SDK_DIR`. Package lists and versions are defined at the top of the script.
 
-## Options
+## What it changes
 
-```bash
-./setup-flutter-arch.sh --dry-run
-./setup-flutter-arch.sh --flutter-version 3.47.9
-./setup-flutter-arch.sh --android-api 36
-./setup-flutter-arch.sh --sdk "$HOME/Android/Sdk"
-```
+| Area | Change |
+|---|---|
+| Packages | `git curl unzip xz zip glu jdk17-openjdk` (missing ones only) |
+| Java | JDK 17 set as system default |
+| Flutter | `~/dev/flutter` (stable branch) |
+| Android SDK | `~/Android/Sdk` (platform 36, platform-tools, build-tools) |
+| Gradle | `~/.gradle/gradle.properties` (existing keys preserved) |
+| Shell config | Marked block in `~/.bashrc` and `~/.zshrc`; `~/.config/fish/conf.d/flutter-android.fish` for fish |
 
-Environment variables can also override defaults:
+Existing rc files are backed up once as `*.flutter-setup.bak`. Android Studio, the emulator and `android-tools` are intentionally not installed.
 
-```bash
-FLUTTER_VERSION=3.47.9 \
-ANDROID_API=36 \
-BUILD_TOOLS_VERSION=36.0.0 \
-./setup-flutter-arch.sh
-```
+## Connect a device
 
-## Verify a physical device
-
-On the phone, enable **Developer options** and **USB debugging**, connect it over USB, and approve the computer authorization prompt.
-
-Open a new shell, then run:
+Enable **Developer options → USB debugging** on the phone, connect it with a data cable, and accept the prompt. Then verify:
 
 ```bash
 adb devices
-flutter doctor
 flutter devices
 ```
 
-The device should appear with the state `device`. No emulator is required.
+## Uninstall
 
-## References
+```bash
+sed -i '/# >>> flutter-android setup >>>/,/# <<< flutter-android setup <<</d' ~/.bashrc ~/.zshrc
+rm -f ~/.config/fish/conf.d/flutter-android.fish
+rm -rf ~/dev/flutter ~/Android/Sdk
+```
 
-- [Flutter installation for Linux](https://docs.flutter.dev/install/linux)
-- [Flutter SDK archive](https://docs.flutter.dev/install/archive)
-- [Flutter Android deployment](https://docs.flutter.dev/deployment/android)
-- [Android command-line tools](https://developer.android.com/tools)
-- [Arch Linux `android-tools` package](https://archlinux.org/packages/extra/x86_64/android-tools/)
-- [Arch Linux `android-udev` package](https://archlinux.org/packages/extra/any/android-udev/)
+## Notes
+
+The command-line tools download is pinned to a specific build and checked for integrity, but not against a checksum. Override it with `CMDLINE_URL` if the link changes.
+
+## License
+
+Add a `LICENSE` file of your choice.
