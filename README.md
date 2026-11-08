@@ -19,8 +19,8 @@ Automated Flutter and Android SDK setup for Arch-based Linux, without Android St
 ## Usage
 
 ```bash
-git clone https://github.com/<your-username>/<repo>.git
-cd <repo>
+git clone https://github.com/niraletter/flutter-arch-seutp.git
+cd flutter-arch-setup
 chmod +x flutter-setup.sh
 
 ./flutter-setup.sh --dry-run   # preview
